@@ -85,7 +85,7 @@ class LancamentoService {
   }
 
   async atualizar(id: number, payload: any) {
-    if (!id) throw new Error('Lancamento invalido');
+    if (!id) throw new Error('Lançamento inválido');
 
     const data: any = {};
     for (const field of ['tipo', 'descricao', 'status', 'origem', 'observacao']) {
@@ -105,7 +105,7 @@ class LancamentoService {
   }
 
   async remover(id: number) {
-    if (!id) throw new Error('Lancamento invalido');
+    if (!id) throw new Error('Lançamento inválido');
     await prismaClient.lancamento.delete({ where: { id } });
     return { deleted: true };
   }
@@ -114,7 +114,7 @@ class LancamentoService {
     const recorrenteId = Number(payload.recorrenteId);
     const mes = Number(payload.mes);
     const ano = Number(payload.ano);
-    if (!recorrenteId) throw new Error('Recorrente invalido');
+    if (!recorrenteId) throw new Error('Recorrente inválido');
 
     const { month, year } = monthRange(mes, ano);
     const recorrente = await prismaClient.recorrente.findUnique({
@@ -123,7 +123,7 @@ class LancamentoService {
     });
 
     if (!recorrente || !recorrenteValidoNoMes(recorrente, year, month)) {
-      throw new Error('Recorrente nao encontrado para este mes');
+      throw new Error('Recorrente não encontrado para este mês');
     }
 
     const simulado = simularRecorrente(recorrente, year, month);

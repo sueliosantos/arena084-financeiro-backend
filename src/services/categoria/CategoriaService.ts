@@ -7,8 +7,8 @@ class CategoriaService {
 
   async criar({ nome, tipo }: { nome: string; tipo: any }) {
     const nomeLimpo = nome?.trim();
-    if (!nomeLimpo) throw new Error('Nome obrigatorio');
-    if (!tipo) throw new Error('Tipo obrigatorio');
+    if (!nomeLimpo) throw new Error('Nome obrigatório');
+    if (!tipo) throw new Error('Tipo obrigatório');
 
     return prismaClient.categoria.create({
       data: { nome: nomeLimpo, tipo }
@@ -16,7 +16,7 @@ class CategoriaService {
   }
 
   async atualizar({ id, nome, tipo }: { id: number; nome?: string; tipo?: any }) {
-    if (!id) throw new Error('Categoria invalida');
+    if (!id) throw new Error('Categoria inválida');
 
     const data: any = {};
     if (nome !== undefined) data.nome = nome.trim();
@@ -26,7 +26,7 @@ class CategoriaService {
   }
 
   async remover(id: number) {
-    if (!id) throw new Error('Categoria invalida');
+    if (!id) throw new Error('Categoria inválida');
     await prismaClient.categoria.delete({ where: { id } });
     return { deleted: true };
   }

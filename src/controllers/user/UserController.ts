@@ -7,7 +7,7 @@ class UserController {
       const service = new UserService();
       return res.status(201).json(await service.criar(req.body));
     } catch (error: any) {
-      return res.status(400).json({ error: error?.message || 'Erro ao criar usuario' });
+      return res.status(400).json({ error: error?.message || 'Erro ao criar usuário' });
     }
   }
 
@@ -16,7 +16,7 @@ class UserController {
       const service = new UserService();
       return res.json(await service.detalhe(Number(req.user_id)));
     } catch (error: any) {
-      return res.status(400).json({ error: error?.message || 'Erro ao buscar usuario' });
+      return res.status(400).json({ error: error?.message || 'Erro ao buscar usuário' });
     }
   }
 }

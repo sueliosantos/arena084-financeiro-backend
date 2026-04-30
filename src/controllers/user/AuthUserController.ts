@@ -7,7 +7,7 @@ class AuthUserController {
       const service = new UserService();
       return res.json(await service.autenticar(req.body));
     } catch (error: any) {
-      return res.status(400).json({ error: error?.message || 'Erro ao autenticar usuario' });
+      return res.status(400).json({ error: error?.message || 'Erro ao autenticar usuário' });
     }
   }
 }
