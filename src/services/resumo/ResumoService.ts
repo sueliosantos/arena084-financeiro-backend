@@ -1,5 +1,5 @@
 import prismaClient from '../../prisma';
-import { monthRange, toMonthDate } from '../../utils/date';
+import { monthRange } from '../../utils/date';
 import { recorrenteValidoNoMes } from '../../utils/recorrencia';
 
 class ResumoService {
@@ -25,18 +25,10 @@ class ResumoService {
           })
         ]);
 
-        const materializados = new Set(
-          lancamentos
-            .filter((item) => item.recorrenteId)
-            .map((item) => `${item.recorrenteId}-${new Date(item.data).toISOString().slice(0, 10)}`)
-        );
+        const materializados = new Set(lancamentos.filter((item) => item.recorrenteId).map((item) => item.recorrenteId));
         const simulados = recorrentes
           .filter((item) => recorrenteValidoNoMes(item, year, mes))
-          .filter((item) => {
-            const dia = item.diaPagamento || new Date(item.dataInicio).getUTCDate();
-            const data = toMonthDate(year, mes, dia).toISOString().slice(0, 10);
-            return !materializados.has(`${item.id}-${data}`);
-          });
+          .filter((item) => !materializados.has(item.id));
         const todos = [...lancamentos, ...simulados];
         const confirmados = todos.filter((item: any) => item.status === 'PAGO');
         const receitas = confirmados.filter((item) => item.tipo === 'RECEITA').reduce((sum, item) => sum + Number(item.valor), 0);

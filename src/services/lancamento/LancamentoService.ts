@@ -25,15 +25,11 @@ class LancamentoService {
       })
     ]);
 
-    const materializados = new Set(
-      lancamentos
-        .filter((item) => item.recorrenteId)
-        .map((item) => `${item.recorrenteId}-${new Date(item.data).toISOString().slice(0, 10)}`)
-    );
+    const materializados = new Set(lancamentos.filter((item) => item.recorrenteId).map((item) => item.recorrenteId));
     const simulados = recorrentes
       .filter((item) => recorrenteValidoNoMes(item, year, month))
       .map((item) => simularRecorrente(item, year, month))
-      .filter((item) => !materializados.has(`${item.recorrenteId}-${String(item.data).slice(0, 10)}`));
+      .filter((item) => !materializados.has(item.recorrenteId));
     const reais = lancamentos.map(decimalFields);
 
     return [...simulados, ...reais].sort((a: any, b: any) => new Date(b.data).getTime() - new Date(a.data).getTime());
@@ -127,7 +123,7 @@ class LancamentoService {
     }
 
     const simulado = simularRecorrente(recorrente, year, month);
-    const dataReferencia = normalizeDate(simulado.data);
+    const dataReferencia = normalizeDate(payload.data || simulado.data);
 
     const lancamento = await prismaClient.lancamento.upsert({
       where: {
