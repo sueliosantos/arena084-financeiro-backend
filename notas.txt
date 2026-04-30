@@ -1,0 +1,16 @@
+para rodar o backend
+npm run dev
+
+para rodar o front
+npm run dev
+
+Esse script executa:
+npx prisma migrate dev
+
+
+O Prisma recusou migrate dev por estar em terminal não interativo. Como é ambiente local de desenvolvimento, vou aplicar com prisma db push, 
+que sincroniza o schema direto no banco.
+
+erro de porta usada
+netstat -ano | findstr :3000
+Stop-Process -Id <PID> -Force
