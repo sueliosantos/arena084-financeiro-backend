@@ -36,7 +36,7 @@ class ResumoService {
         const simulados = recorrentes
           .filter((item) => recorrenteValidoNoMes(item, year, mes))
           .filter((item) => {
-            const dia = new Date(item.dataInicio).getUTCDate();
+            const dia = item.diaPagamento || new Date(item.dataInicio).getUTCDate();
             const data = toMonthDate(year, mes, dia).toISOString().slice(0, 10);
             return !materializados.has(`${item.id}-${data}`);
           });

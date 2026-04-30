@@ -7,7 +7,7 @@ export function recorrenteValidoNoMes(recorrente: any, year: number, month: numb
 }
 
 export function simularRecorrente(recorrente: any, year: number, month: number) {
-  const dia = new Date(recorrente.dataInicio).getUTCDate();
+  const dia = recorrente.diaPagamento || new Date(recorrente.dataInicio).getUTCDate();
 
   return {
     id: `recorrente-${recorrente.id}-${year}-${String(month).padStart(2, '0')}`,

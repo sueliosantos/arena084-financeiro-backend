@@ -1,6 +1,13 @@
 import prismaClient from '../../prisma';
 import { decimalFields, normalizeDate } from '../../utils/normalizers';
 
+function normalizeDiaPagamento(value: any) {
+  if (value === undefined || value === null || value === '') return null;
+  const dia = Number(value);
+  if (!Number.isInteger(dia) || dia < 1 || dia > 31) throw new Error('Dia de pagamento invalido');
+  return dia;
+}
+
 class RecorrenteService {
   async listar() {
     const recorrentes = await prismaClient.recorrente.findMany({
@@ -20,6 +27,7 @@ class RecorrenteService {
         categoriaId: Number(data.categoriaId),
         dataInicio: normalizeDate(data.dataInicio),
         dataFim: data.dataFim ? normalizeDate(data.dataFim) : null,
+        diaPagamento: normalizeDiaPagamento(data.diaPagamento),
         ativo: data.ativo ?? true
       },
       include: { categoria: true }
@@ -55,6 +63,7 @@ class RecorrenteService {
           categoriaId: payload.categoriaId !== undefined ? Number(payload.categoriaId) : recorrenteAtual.categoriaId,
           dataInicio: aplicarAPartir,
           dataFim: payload.dataFim ? normalizeDate(payload.dataFim) : null,
+          diaPagamento: payload.diaPagamento !== undefined ? normalizeDiaPagamento(payload.diaPagamento) : recorrenteAtual.diaPagamento,
           ativo: payload.ativo ?? true
         },
         include: { categoria: true }
@@ -71,6 +80,7 @@ class RecorrenteService {
     if (payload.categoriaId !== undefined) data.categoriaId = Number(payload.categoriaId);
     if (payload.dataInicio !== undefined) data.dataInicio = normalizeDate(payload.dataInicio);
     if (payload.dataFim !== undefined) data.dataFim = payload.dataFim ? normalizeDate(payload.dataFim) : null;
+    if (payload.diaPagamento !== undefined) data.diaPagamento = normalizeDiaPagamento(payload.diaPagamento);
 
     const recorrente = await prismaClient.recorrente.update({
       where: { id },

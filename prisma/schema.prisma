@@ -67,6 +67,7 @@ model Recorrente {
   categoriaId  Int
   dataInicio   DateTime
   dataFim      DateTime?
+  diaPagamento Int?
   ativo        Boolean         @default(true)
   categoria    Categoria       @relation(fields: [categoriaId], references: [id])
   lancamentos  Lancamento[]
