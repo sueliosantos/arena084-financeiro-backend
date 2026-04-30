@@ -46,6 +46,7 @@ class LancamentoService {
         observacao: data.observacao ? String(data.observacao).trim() : null,
         data: normalizeDate(data.data),
         status: data.status || 'PENDENTE',
+        contabiliza: data.contabiliza ?? true,
         categoriaId: Number(data.categoriaId),
         origem: data.origem || 'MANUAL'
       },
@@ -71,6 +72,7 @@ class LancamentoService {
         observacao: null,
         data: parsed.data,
         status: parsed.status as any,
+        contabiliza: true,
         categoriaId: categoria.id,
         origem: 'WHATSAPP'
       },
@@ -84,7 +86,7 @@ class LancamentoService {
     if (!id) throw new Error('Lançamento inválido');
 
     const data: any = {};
-    for (const field of ['tipo', 'descricao', 'status', 'origem', 'observacao']) {
+    for (const field of ['tipo', 'descricao', 'status', 'origem', 'observacao', 'contabiliza']) {
       if (payload[field] !== undefined) data[field] = payload[field];
     }
     if (payload.valor !== undefined) data.valor = Number(payload.valor);
@@ -139,6 +141,7 @@ class LancamentoService {
         observacao: payload.observacao ? String(payload.observacao).trim() : null,
         data: dataReferencia,
         status: payload.status || 'PENDENTE',
+        contabiliza: payload.contabiliza ?? true,
         categoriaId: recorrente.categoriaId,
         recorrenteId,
         origem: 'RECORRENTE'
@@ -146,6 +149,8 @@ class LancamentoService {
       update: {
         status: payload.status,
         valor: payload.valor !== undefined ? Number(payload.valor) : undefined,
+        data: payload.data !== undefined ? dataReferencia : undefined,
+        contabiliza: payload.contabiliza,
         observacao: payload.observacao !== undefined ? String(payload.observacao || '').trim() || null : undefined
       },
       include: { categoria: true }

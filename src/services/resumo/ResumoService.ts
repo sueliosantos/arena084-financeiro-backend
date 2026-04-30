@@ -30,11 +30,12 @@ class ResumoService {
           .filter((item) => recorrenteValidoNoMes(item, year, mes))
           .filter((item) => !materializados.has(item.id));
         const todos = [...lancamentos, ...simulados];
-        const confirmados = todos.filter((item: any) => item.status === 'PAGO');
+        const contabilizaveis = todos.filter((item: any) => item.contabiliza !== false);
+        const confirmados = contabilizaveis.filter((item: any) => item.status === 'PAGO');
         const receitas = confirmados.filter((item) => item.tipo === 'RECEITA').reduce((sum, item) => sum + Number(item.valor), 0);
         const despesas = confirmados.filter((item) => item.tipo === 'DESPESA').reduce((sum, item) => sum + Number(item.valor), 0);
-        const pendente = todos.filter((item: any) => item.status !== 'PAGO' && item.tipo === 'DESPESA').reduce((sum, item) => sum + Number(item.valor), 0);
-        const cadastrado = todos.reduce((sum, item) => sum + Number(item.valor), 0);
+        const pendente = contabilizaveis.filter((item: any) => item.status !== 'PAGO' && item.tipo === 'DESPESA').reduce((sum, item) => sum + Number(item.valor), 0);
+        const cadastrado = contabilizaveis.reduce((sum, item) => sum + Number(item.valor), 0);
         const itens = todos.map((item: any) => ({
           id: item.id,
           descricao: item.descricao,
@@ -42,6 +43,7 @@ class ResumoService {
           status: item.status,
           origem: item.origem,
           valor: Number(item.valor),
+          contabiliza: item.contabiliza !== false,
           observacao: item.observacao || null,
           categoria: item.categoria?.nome || null
         }));

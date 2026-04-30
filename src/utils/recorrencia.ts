@@ -16,6 +16,7 @@ export function simularRecorrente(recorrente: any, year: number, month: number) 
     descricao: recorrente.descricao,
     data: toMonthDate(year, month, dia).toISOString(),
     status: 'PENDENTE',
+    contabiliza: true,
     observacao: null,
     categoriaId: recorrente.categoriaId,
     categoria: recorrente.categoria,

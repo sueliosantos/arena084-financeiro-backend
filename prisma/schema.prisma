@@ -44,6 +44,7 @@ model Lancamento {
   observacao   String?
   data         DateTime
   status       StatusLancamento  @default(PENDENTE)
+  contabiliza  Boolean           @default(true)
   categoriaId  Int
   recorrenteId Int?
   origem       OrigemLancamento  @default(MANUAL)
