@@ -12,7 +12,7 @@ class RecorrenteService {
   async listar() {
     const recorrentes = await prismaClient.recorrente.findMany({
       include: { categoria: true },
-      orderBy: { descricao: 'asc' }
+      orderBy: [{ categoria: { nome: 'asc' } }, { descricao: 'asc' }]
     });
 
     return recorrentes.map(decimalFields);

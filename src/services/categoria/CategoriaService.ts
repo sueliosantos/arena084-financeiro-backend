@@ -2,7 +2,7 @@ import prismaClient from '../../prisma';
 
 class CategoriaService {
   async listar() {
-    return prismaClient.categoria.findMany({ orderBy: [{ tipo: 'asc' }, { nome: 'asc' }] });
+    return prismaClient.categoria.findMany({ orderBy: { nome: 'asc' } });
   }
 
   async criar({ nome, tipo }: { nome: string; tipo: any }) {

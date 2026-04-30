@@ -138,7 +138,7 @@ class LancamentoService {
       },
       create: {
         tipo: recorrente.tipo,
-        valor: recorrente.valor,
+        valor: payload.valor !== undefined ? Number(payload.valor) : recorrente.valor,
         descricao: recorrente.descricao,
         observacao: payload.observacao ? String(payload.observacao).trim() : null,
         data: dataReferencia,
@@ -149,6 +149,7 @@ class LancamentoService {
       },
       update: {
         status: payload.status,
+        valor: payload.valor !== undefined ? Number(payload.valor) : undefined,
         observacao: payload.observacao !== undefined ? String(payload.observacao || '').trim() || null : undefined
       },
       include: { categoria: true }
