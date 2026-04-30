@@ -5,13 +5,10 @@ import { recorrenteValidoNoMes } from '../../utils/recorrencia';
 class ResumoService {
   async anual(ano: number | string, mesLimite?: number | string) {
     const year = Number(ano);
-    if (!Number.isInteger(year) || year < 1900 || year > 2200) throw new Error('Ano invalido');
-    const hoje = new Date();
-    const anoAtual = hoje.getFullYear();
-    const mesAtual = hoje.getMonth() + 1;
+    if (!Number.isInteger(year) || year < 1900 || year > 2200) throw new Error('Ano inválido');
     const limiteSolicitado = mesLimite ? Number(mesLimite) : 12;
-    const limiteAno = year === anoAtual ? mesAtual : year < anoAtual ? 12 : 0;
-    const limite = Math.max(0, Math.min(limiteSolicitado, limiteAno));
+    if (!Number.isInteger(limiteSolicitado) || limiteSolicitado < 1 || limiteSolicitado > 12) throw new Error('Mês inválido');
+    const limite = Math.min(limiteSolicitado, 12);
 
     const meses = await Promise.all(
       Array.from({ length: limite }, async (_, index) => {

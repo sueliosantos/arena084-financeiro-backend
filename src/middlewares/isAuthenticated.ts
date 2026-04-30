@@ -9,7 +9,7 @@ export function isAuthenticated(req: Request, res: Response, next: NextFunction)
   const authToken = req.headers.authorization;
 
   if (!authToken) {
-    return res.status(401).json({ error: 'Token nao informado' });
+    return res.status(401).json({ error: 'Token não informado' });
   }
 
   const [, token] = authToken.split(' ');
@@ -19,6 +19,6 @@ export function isAuthenticated(req: Request, res: Response, next: NextFunction)
     req.user_id = sub;
     return next();
   } catch {
-    return res.status(401).json({ error: 'Token invalido' });
+    return res.status(401).json({ error: 'Token inválido' });
   }
 }

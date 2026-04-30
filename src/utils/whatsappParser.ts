@@ -3,7 +3,7 @@ export function parseWhatsAppMessage(message: string, now = new Date()) {
   const match = text.match(/^([+-])\s*(\d+(?:[.,]\d{1,2})?)\s+(.+)$/);
 
   if (!match) {
-    throw new Error('Mensagem invalida. Use exemplos como +2000 salario ou -50 mercado.');
+    throw new Error('Mensagem inválida. Use exemplos como +2000 salário ou -50 mercado.');
   }
 
   const [, signal, rawValue, rawDescription] = match;
@@ -11,7 +11,7 @@ export function parseWhatsAppMessage(message: string, now = new Date()) {
   const descricao = rawDescription.trim();
 
   if (!Number.isFinite(valor) || valor <= 0 || !descricao) {
-    throw new Error('Mensagem invalida. Informe valor e descricao.');
+    throw new Error('Mensagem inválida. Informe valor e descrição.');
   }
 
   return {

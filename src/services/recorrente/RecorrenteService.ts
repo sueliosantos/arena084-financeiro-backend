@@ -4,7 +4,7 @@ import { decimalFields, normalizeDate } from '../../utils/normalizers';
 function normalizeDiaPagamento(value: any) {
   if (value === undefined || value === null || value === '') return null;
   const dia = Number(value);
-  if (!Number.isInteger(dia) || dia < 1 || dia > 31) throw new Error('Dia de pagamento invalido');
+  if (!Number.isInteger(dia) || dia < 1 || dia > 31) throw new Error('Dia de pagamento inválido');
   return dia;
 }
 
@@ -37,7 +37,7 @@ class RecorrenteService {
   }
 
   async atualizar(id: number, payload: any) {
-    if (!id) throw new Error('Recorrente invalido');
+    if (!id) throw new Error('Recorrente inválido');
 
     if (payload.aplicarAPartir) {
       const aplicarAPartir = normalizeDate(payload.aplicarAPartir);
@@ -48,7 +48,7 @@ class RecorrenteService {
         where: { id },
         include: { categoria: true }
       });
-      if (!recorrenteAtual) throw new Error('Recorrente nao encontrado');
+      if (!recorrenteAtual) throw new Error('Recorrente não encontrado');
 
       await prismaClient.recorrente.update({
         where: { id },
@@ -92,7 +92,7 @@ class RecorrenteService {
   }
 
   async remover(id: number) {
-    if (!id) throw new Error('Recorrente invalido');
+    if (!id) throw new Error('Recorrente inválido');
     await prismaClient.recorrente.delete({ where: { id } });
     return { deleted: true };
   }

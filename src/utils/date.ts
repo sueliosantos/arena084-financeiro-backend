@@ -3,11 +3,11 @@ export function monthRange(mes: number | string, ano: number | string) {
   const year = Number(ano);
 
   if (!Number.isInteger(month) || month < 1 || month > 12) {
-    throw new Error('Mes invalido');
+    throw new Error('Mês inválido');
   }
 
   if (!Number.isInteger(year) || year < 1900 || year > 2200) {
-    throw new Error('Ano invalido');
+    throw new Error('Ano inválido');
   }
 
   const inicio = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0));

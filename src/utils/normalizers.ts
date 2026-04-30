@@ -5,6 +5,6 @@ export const decimalFields = <T extends { valor: any }>(item: T) => ({
 
 export function normalizeDate(value?: string | Date | null) {
   const date = value ? new Date(value) : new Date();
-  if (Number.isNaN(date.getTime())) throw new Error('Data invalida');
+  if (Number.isNaN(date.getTime())) throw new Error('Data inválida');
   return date;
 }
