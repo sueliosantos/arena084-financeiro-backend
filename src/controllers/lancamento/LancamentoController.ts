@@ -5,7 +5,12 @@ class LancamentoController {
   async listar(req: Request, res: Response) {
     try {
       const service = new LancamentoService();
-      return res.json(await service.listarPorMes(req.query.mes as string, req.query.ano as string));
+      return res.json(
+        await service.listarPorMes(req.query.mes as string, req.query.ano as string, {
+          tipo: req.query.tipo as string,
+          status: req.query.status as string
+        })
+      );
     } catch (error: any) {
       return res.status(400).json({ error: error?.message || 'Erro ao listar lançamentos' });
     }

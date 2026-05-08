@@ -4,31 +4,54 @@ import { decimalFields, normalizeDate } from '../../utils/normalizers';
 import { recorrenteValidoNoMes, simularRecorrente } from '../../utils/recorrencia';
 import { parseWhatsAppMessage } from '../../utils/whatsappParser';
 
-class LancamentoService {
-  async listarPorMes(mes: number | string, ano: number | string) {
-    const { inicio, fim, month, year } = monthRange(mes, ano);
+type ListarLancamentoFiltros = {
+  tipo?: string;
+  status?: string;
+};
 
-    const [lancamentos, recorrentes] = await Promise.all([
+class LancamentoService {
+  async listarPorMes(mes: number | string, ano: number | string, filtros: ListarLancamentoFiltros = {}) {
+    const { inicio, fim, month, year } = monthRange(mes, ano);
+    const tipo = filtros.tipo === 'RECEITA' || filtros.tipo === 'DESPESA' ? filtros.tipo : undefined;
+    const status = filtros.status === 'PAGO' || filtros.status === 'PENDENTE' ? filtros.status : undefined;
+    const where: any = {
+      data: { gte: inicio, lt: fim },
+      ...(tipo ? { tipo } : {}),
+      ...(status ? { status } : {})
+    };
+    const recorrenteWhere: any = {
+      ativo: true,
+      dataInicio: { lt: fim },
+      OR: [{ dataFim: null }, { dataFim: { gte: inicio } }],
+      ...(tipo ? { tipo } : {})
+    };
+
+    const [lancamentos, recorrentes, recorrentesMaterializados] = await Promise.all([
       prismaClient.lancamento.findMany({
-        where: { data: { gte: inicio, lt: fim } },
+        where,
         include: { categoria: true },
         orderBy: { data: 'desc' }
       }),
       prismaClient.recorrente.findMany({
-        where: {
-          ativo: true,
-          dataInicio: { lt: fim },
-          OR: [{ dataFim: null }, { dataFim: { gte: inicio } }]
-        },
+        where: recorrenteWhere,
         include: { categoria: true },
         orderBy: { descricao: 'asc' }
+      }),
+      prismaClient.lancamento.findMany({
+        where: {
+          data: { gte: inicio, lt: fim },
+          recorrenteId: { not: null },
+          ...(tipo ? { tipo } : {})
+        },
+        select: { recorrenteId: true }
       })
     ]);
 
-    const materializados = new Set(lancamentos.filter((item) => item.recorrenteId).map((item) => item.recorrenteId));
+    const materializados = new Set(recorrentesMaterializados.map((item) => item.recorrenteId));
     const simulados = recorrentes
       .filter((item) => recorrenteValidoNoMes(item, year, month))
       .map((item) => simularRecorrente(item, year, month))
+      .filter((item) => !status || item.status === status)
       .filter((item) => !materializados.has(item.recorrenteId));
     const reais = lancamentos.map(decimalFields);
 
