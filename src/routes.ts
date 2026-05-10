@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { CategoriaController } from './controllers/categoria/CategoriaController';
 import { LancamentoController } from './controllers/lancamento/LancamentoController';
+import { ListaCompraController } from './controllers/listaCompra/ListaCompraController';
 import { RecorrenteController } from './controllers/recorrente/RecorrenteController';
 import { ResumoController } from './controllers/resumo/ResumoController';
 import { AuthUserController } from './controllers/user/AuthUserController';
@@ -19,6 +20,12 @@ router.get('/categorias', isAuthenticated, new CategoriaController().listar);
 router.post('/categorias', isAuthenticated, new CategoriaController().criar);
 router.put('/categorias/:id', isAuthenticated, new CategoriaController().atualizar);
 router.delete('/categorias/:id', isAuthenticated, new CategoriaController().remover);
+
+router.get('/lista-compras', isAuthenticated, new ListaCompraController().listar);
+router.post('/lista-compras', isAuthenticated, new ListaCompraController().criar);
+router.put('/lista-compras/:id', isAuthenticated, new ListaCompraController().atualizar);
+router.delete('/lista-compras/realizado', isAuthenticated, new ListaCompraController().realizar);
+router.delete('/lista-compras/:id', isAuthenticated, new ListaCompraController().remover);
 
 router.get('/lancamentos', isAuthenticated, new LancamentoController().listar);
 router.post('/lancamentos', isAuthenticated, new LancamentoController().criar);

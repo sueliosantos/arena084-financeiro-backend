@@ -81,6 +81,18 @@ model Recorrente {
   @@map("recorrentes")
 }
 
+model ItemCompra {
+  id           Int      @id @default(autoincrement())
+  descricao    String
+  comprado     Boolean  @default(false)
+  preco        Decimal? @db.Decimal(12, 2)
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@index([comprado])
+  @@map("itens_compra")
+}
+
 model Usuario {
   id           Int      @id @default(autoincrement())
   nome         String
