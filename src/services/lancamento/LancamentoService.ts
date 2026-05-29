@@ -9,6 +9,20 @@ type ListarLancamentoFiltros = {
   status?: string;
 };
 
+async function validarCategoriaId(categoriaId: any) {
+  const id = Number(categoriaId);
+  if (!Number.isInteger(id) || id <= 0) {
+    throw new Error('Escolha uma categoria antes de salvar o lanÃ§amento.');
+  }
+
+  const categoria = await prismaClient.categoria.findUnique({ where: { id } });
+  if (!categoria) {
+    throw new Error('Categoria nÃ£o encontrada. Escolha uma categoria vÃ¡lida.');
+  }
+
+  return id;
+}
+
 class LancamentoService {
   async listarPorMes(mes: number | string, ano: number | string, filtros: ListarLancamentoFiltros = {}) {
     const { inicio, fim, month, year } = monthRange(mes, ano);
@@ -61,6 +75,8 @@ class LancamentoService {
   async criar(data: any) {
     if (data.mensagem) return this.criarWhatsApp(data.mensagem);
 
+    const categoriaId = await validarCategoriaId(data.categoriaId);
+
     const lancamento = await prismaClient.lancamento.create({
       data: {
         tipo: data.tipo,
@@ -70,7 +86,7 @@ class LancamentoService {
         data: normalizeDate(data.data),
         status: data.status || 'PENDENTE',
         contabiliza: data.contabiliza ?? true,
-        categoriaId: Number(data.categoriaId),
+        categoriaId,
         origem: data.origem || 'MANUAL'
       },
       include: { categoria: true }
@@ -114,7 +130,7 @@ class LancamentoService {
     }
     if (payload.valor !== undefined) data.valor = Number(payload.valor);
     if (payload.data !== undefined) data.data = normalizeDate(payload.data);
-    if (payload.categoriaId !== undefined) data.categoriaId = Number(payload.categoriaId);
+    if (payload.categoriaId !== undefined) data.categoriaId = await validarCategoriaId(payload.categoriaId);
 
     const lancamento = await prismaClient.lancamento.update({
       where: { id },
