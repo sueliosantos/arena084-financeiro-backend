@@ -165,6 +165,7 @@ class LancamentoService {
 
     const simulado = simularRecorrente(recorrente, year, month);
     const dataReferencia = normalizeDate(payload.data || simulado.data);
+    const categoriaId = payload.categoriaId !== undefined ? await validarCategoriaId(payload.categoriaId) : recorrente.categoriaId;
 
     const lancamento = await prismaClient.lancamento.upsert({
       where: {
@@ -181,7 +182,7 @@ class LancamentoService {
         data: dataReferencia,
         status: payload.status || 'PENDENTE',
         contabiliza: payload.contabiliza ?? true,
-        categoriaId: recorrente.categoriaId,
+        categoriaId,
         recorrenteId,
         origem: 'RECORRENTE'
       },
@@ -189,6 +190,7 @@ class LancamentoService {
         status: payload.status,
         valor: payload.valor !== undefined ? Number(payload.valor) : undefined,
         data: payload.data !== undefined ? dataReferencia : undefined,
+        categoriaId: payload.categoriaId !== undefined ? categoriaId : undefined,
         contabiliza: payload.contabiliza,
         observacao: payload.observacao !== undefined ? String(payload.observacao || '').trim() || null : undefined
       },
